@@ -1,2 +1,1 @@
-# gha
-GitHub  Actions
+# Placeholder for README.md
