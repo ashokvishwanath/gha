@@ -1,1 +1,11 @@
-# Placeholder for values.yaml
+frontend:
+  image: ashokvsetty/3-tier-microservices-frontend:latest
+  imagePullPolicy: Always
+
+serviceA:
+  image: ashokvsetty/3-tier-microservices-service-a:latest
+  imagePullPolicy: Always
+
+serviceB:
+  image: ashokvsetty/3-tier-microservices-service-b:latest
+  imagePullPolicy: Always
