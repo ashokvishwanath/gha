@@ -1,1 +1,19 @@
-# Placeholder for service-a-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-a
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-a
+  template:
+    metadata:
+      labels:
+        app: service-a
+    spec:
+      containers:
+        - name: service-a
+          image: {{ .Values.serviceA.image }}
+          ports:
+            - containerPort: 5000
