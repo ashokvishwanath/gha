@@ -34,4 +34,4 @@ jobs:
       - name: Build and push service-b image
         run: |
           docker build -t ashokvsetty/3-tier-microservices-service-b:latest ./services/service-b
-          docker push ashokvsetty/3-tier-microservices-service
+          docker push ashokvsetty/3-tier-microservices-service-b:latest
