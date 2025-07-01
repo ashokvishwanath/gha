@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: service-a
 spec:
-  replicas: 1
+  replicas: {{ .Values.serviceA.replicas }}
   selector:
     matchLabels:
       app: service-a
@@ -17,3 +17,22 @@ spec:
           image: {{ .Values.serviceA.image }}
           ports:
             - containerPort: 5000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: "256Mi"
+            requests:
+              cpu: "0.1"
+              memory: "128Mi"
