@@ -1,4 +1,4 @@
-name: Build and Push Docker Images
+name: Build, Push, and Deploy
 
 on:
   push:
@@ -35,3 +35,25 @@ jobs:
         run: |
           docker build -t ashokvsetty/3-tier-microservices-service-b:latest ./services/service-b
           docker push ashokvsetty/3-tier-microservices-service-b:latest
+          
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        
+      - name: Configure Kubernetes context
+        uses: azure/k8s-set-context@v3
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          
+      - name: Deploy to Kubernetes
+        run: |
+          helm upgrade --install microservices ./charts/microservices --namespace microservices --create-namespace
