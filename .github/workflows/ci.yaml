@@ -71,7 +71,8 @@ jobs:
       
       - name: 🚀 Deploy to Kubernetes
         run: |
-          helm upgrade --install microservices ./charts/microservices --namespace microservices --create-namespace
+          # Deploy with Helm but skip the ingress
+          helm upgrade --install microservices ./charts/microservices --namespace microservices --create-namespace --set skipIngress=true
       
       - name: 🔍 Check deployment status
         run: |

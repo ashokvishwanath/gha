@@ -1,3 +1,6 @@
+# Add this at the top level of your values.yaml
+skipIngress: false
+
 frontend:
   image: ashokvsetty/3-tier-microservices-frontend:latest
   imagePullPolicy: Always
