@@ -2,13 +2,259 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>3-Tier Microservices App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4285F4;
+      --secondary: #34A853;
+      --accent: #FBBC05;
+      --danger: #EA4335;
+      --light: #F8F9FA;
+      --dark: #202124;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 1rem 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+    
+    main {
+      padding: 2rem 0;
+    }
+    
+    .hero {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      color: #666;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .services {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    
+    .service-card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .service-header {
+      padding: 1.5rem;
+      background: var(--primary);
+      color: white;
+    }
+    
+    .service-card:nth-child(2) .service-header {
+      background: var(--secondary);
+    }
+    
+    .service-body {
+      padding: 1.5rem;
+    }
+    
+    .service-body p {
+      margin-bottom: 1.5rem;
+      color: #666;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      background-color: var(--primary);
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: 500;
+      transition: background-color 0.3s ease;
+    }
+    
+    .btn:hover {
+      background-color: #3367d6;
+    }
+    
+    .btn-secondary {
+      background-color: var(--secondary);
+    }
+    
+    .btn-secondary:hover {
+      background-color: #2d9247;
+    }
+    
+    footer {
+      background-color: var(--dark);
+      color: white;
+      padding: 2rem 0;
+      margin-top: 3rem;
+    }
+    
+    footer p {
+      text-align: center;
+    }
+    
+    .response-container {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      display: none;
+    }
+    
+    .response-title {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+    
+    .response-content {
+      padding: 1rem;
+      background: #f5f5f5;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    
+    @media (max-width: 768px) {
+      .services {
+        grid-template-columns: 1fr;
+      }
+      
+      .hero h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to the 3-Tier Microservices App</h1>
-  <ul>
-    <li><a href="/service-a">Call Service A</a></li>
-    <li><a href="/service-b">Call Service B</a></li>
-  </ul>
+  <header>
+    <div class="container">
+      <div class="logo">3-Tier Microservices</div>
+    </div>
+  </header>
+  
+  <main>
+    <div class="container">
+      <section class="hero">
+        <h1>Welcome to the 3-Tier Microservices App</h1>
+        <p>A demonstration of a modern microservices architecture with frontend, service-a (Python), and service-b (Go) components.</p>
+      </section>
+      
+      <section class="services">
+        <div class="service-card">
+          <div class="service-header">
+            <h2>Service A</h2>
+          </div>
+          <div class="service-body">
+            <p>Python-based microservice that returns a simple greeting message.</p>
+            <a href="#" class="btn" id="service-a-btn">Call Service A</a>
+          </div>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-header">
+            <h2>Service B</h2>
+          </div>
+          <div class="service-body">
+            <p>Go-based microservice that returns a simple greeting message.</p>
+            <a href="#" class="btn btn-secondary" id="service-b-btn">Call Service B</a>
+          </div>
+        </div>
+      </section>
+      
+      <div class="response-container" id="response-container">
+        <div class="response-title">Response:</div>
+        <div class="response-content" id="response-content"></div>
+      </div>
+    </div>
+  </main>
+  
+  <footer>
+    <div class="container">
+      <p>&copy; 2023 3-Tier Microservices Demo</p>
+    </div>
+  </footer>
+  
+  <script>
+    document.getElementById('service-a-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      fetchService('/service-a');
+    });
+    
+    document.getElementById('service-b-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      fetchService('/service-b');
+    });
+    
+    function fetchService(url) {
+      const responseContainer = document.getElementById('response-container');
+      const responseContent = document.getElementById('response-content');
+      
+      responseContent.textContent = 'Loading...';
+      responseContainer.style.display = 'block';
+      
+      fetch(url)
+        .then(response => response.text())
+        .then(data => {
+          responseContent.textContent = data;
+        })
+        .catch(error => {
+          responseContent.textContent = 'Error: ' + error.message;
+        });
+    }
+  </script>
 </body>
 </html>
