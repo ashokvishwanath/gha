@@ -40,8 +40,8 @@ jobs:
           # Add a timestamp to bust cache
           echo "Building with timestamp: $(date)" > ./services/frontend/build_timestamp.txt
           
-          # Build and push the image
-          docker build -t ${{ env.DOCKER_HUB_REPO }}/3-tier-microservices-frontend:latest ./services/frontend
+          # Build with no-cache to ensure fresh build
+          docker build --no-cache -t ${{ env.DOCKER_HUB_REPO }}/3-tier-microservices-frontend:latest ./services/frontend
           docker push ${{ env.DOCKER_HUB_REPO }}/3-tier-microservices-frontend:latest
 
       - name: 🏗️ Build and push service-a image
@@ -96,10 +96,21 @@ jobs:
           kubectl rollout status deployment/service-a -n microservices
           kubectl rollout status deployment/service-b -n microservices
       
-      - name: 🔄 Force rollout restart
+      - name: 🔄 Force frontend redeployment
         run: |
-          kubectl rollout restart deployment/frontend -n microservices
+          # Delete the pod to force a fresh deployment
+          kubectl delete pod -n microservices -l app=frontend
+          
+          # Wait for the new pod to be ready
+          echo "Waiting for new frontend pod to be ready..."
+          sleep 10
           kubectl rollout status deployment/frontend -n microservices
+          
+          # Verify the content of the new pod
+          echo "Verifying frontend content in new pod:"
+          POD_NAME=$(kubectl get pods -n microservices -l app=frontend -o jsonpath='{.items[0].metadata.name}')
+          kubectl exec -n microservices $POD_NAME -- cat /usr/share/nginx/html/index.html | head -20
+          kubectl exec -n microservices $POD_NAME -- cat /usr/share/nginx/html/version.txt
       
       - name: 🌐 Get Ingress IP
         run: |
