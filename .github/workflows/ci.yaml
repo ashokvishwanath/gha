@@ -83,11 +83,12 @@ jobs:
           mkdir -p /tmp/chart
           cp -r ./charts/microservices/* /tmp/chart/
           
-          # Remove the ingress template
-          rm -f /tmp/chart/templates/ingress.yaml
+          # Update the image tag in values.yaml to force pull the latest image
+          sed -i 's|frontend:latest|frontend:latest?'$(date +%s)'|g' /tmp/chart/values.yaml
+          cat /tmp/chart/values.yaml | grep frontend
           
           # Deploy with Helm using the modified chart
-          helm upgrade --install microservices /tmp/chart --namespace microservices --create-namespace
+          helm upgrade --install microservices /tmp/chart --namespace microservices --create-namespace --set frontend.imagePullPolicy=Always
       
       - name: 🔍 Check deployment status
         run: |
@@ -96,14 +97,9 @@ jobs:
           kubectl rollout status deployment/service-a -n microservices
           kubectl rollout status deployment/service-b -n microservices
       
-      - name: 🔄 Force frontend redeployment
+      - name: 🔄 Force restart of deployments
         run: |
-          # Delete the pod to force a fresh deployment
-          kubectl delete pod -n microservices -l app=frontend
-          
-          # Wait for the new pod to be ready
-          echo "Waiting for new frontend pod to be ready..."
-          sleep 10
+          kubectl rollout restart deployment/frontend -n microservices
           kubectl rollout status deployment/frontend -n microservices
           
           # Verify the content of the new pod
