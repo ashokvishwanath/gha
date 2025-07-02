@@ -28,3 +28,15 @@ serviceB:
     requests:
       cpu: "0.1"
       memory: "128Mi"
+
+serviceC:
+  image: ashokvsetty/3-tier-microservices-service-c:latest
+  imagePullPolicy: Always
+  replicas: 2
+  resources:
+    limits:
+      cpu: "0.5"
+      memory: "256Mi"
+    requests:
+      cpu: "0.1"
+      memory: "128Mi"

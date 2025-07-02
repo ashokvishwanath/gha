@@ -53,6 +53,11 @@ jobs:
         run: |
           docker build -t ${{ env.DOCKER_HUB_REPO }}/3-tier-microservices-service-b:latest ./services/service-b
           docker push ${{ env.DOCKER_HUB_REPO }}/3-tier-microservices-service-b:latest
+
+      - name: 🏗️ Build and push service-c image
+        run: |
+          docker build -t ${{ env.DOCKER_HUB_REPO }}/3-tier-microservices-service-c:latest ./services/service-c
+          docker push ${{ env.DOCKER_HUB_REPO }}/3-tier-microservices-service-c:latest
           
   deploy:
     needs: [build-and-push]

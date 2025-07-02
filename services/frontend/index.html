@@ -190,7 +190,7 @@
     <div class="container">
       <section class="hero">
         <h1>Welcome to the 3-Tier Microservices App</h1>
-        <p>A demonstration of a modern microservices architecture with frontend, service-a (Python), and service-b (Go) components.</p>
+        <p>A demonstration of a modern microservices architecture with frontend, service-a (Python), service-b (Go), and service-c (Node.js) components.</p>
       </section>
       
       <section class="services">
@@ -211,6 +211,16 @@
           <div class="service-body">
             <p>Go-based microservice that returns a simple greeting message.</p>
             <a href="#" class="btn btn-secondary" id="service-b-btn">Call Service B</a>
+          </div>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-header" style="background: var(--accent);">
+            <h2>Service C</h2>
+          </div>
+          <div class="service-body">
+            <p>Node.js-based microservice that returns a simple greeting message.</p>
+            <a href="#" class="btn" id="service-c-btn" style="background: var(--accent);">Call Service C</a>
           </div>
         </div>
       </section>
@@ -237,6 +247,11 @@
     document.getElementById('service-b-btn').addEventListener('click', function(e) {
       e.preventDefault();
       fetchService('/service-b');
+    });
+    
+    document.getElementById('service-c-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      fetchService('/service-c');
     });
     
     function fetchService(url) {

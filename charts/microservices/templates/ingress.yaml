@@ -31,3 +31,10 @@ spec:
                 name: service-b
                 port:
                   number: 5000
+          - path: /service-c
+            pathType: Prefix
+            backend:
+              service:
+                name: service-c
+                port:
+                  number: 5000
