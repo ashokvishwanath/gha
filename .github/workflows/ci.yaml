@@ -35,7 +35,7 @@ jobs:
         run: |
           # Show the content of index.html before building
           echo "Content of index.html before building:"
-          cat ./services/frontend/index.html | head -10
+          cat ./services/frontend/index.html | grep "Service C"
           
           # Add a timestamp to bust cache
           echo "Building with timestamp: $(date)" > ./services/frontend/build_timestamp.txt
@@ -130,8 +130,26 @@ jobs:
             sleep 15
           done
 
+      - name: 🔄 Force restart of frontend deployment
+        run: |
+          echo "Forcing restart of frontend deployment..."
+          kubectl rollout restart deployment/frontend -n microservices
+          kubectl rollout status deployment/frontend -n microservices --timeout=300s
+
       - name: 🔍 Verify frontend content
         run: |
           echo "Verifying frontend content..."
           POD_NAME=$(kubectl get pods -n microservices -l app=frontend -o jsonpath='{.items[0].metadata.name}')
           kubectl exec -n microservices $POD_NAME -- cat /usr/share/nginx/html/index.html | head -20
+
+      - name: 🔍 Check service-c deployment
+        run: |
+          echo "Checking service-c deployment..."
+          kubectl get deployment service-c -n microservices
+          kubectl get pods -n microservices -l app=service-c
+          kubectl get service service-c -n microservices
+          
+          # Test service-c endpoint
+          echo "Testing service-c endpoint..."
+          POD_NAME=$(kubectl get pods -n microservices -l app=service-c -o jsonpath='{.items[0].metadata.name}')
+          kubectl exec -n microservices $POD_NAME -- curl -s localhost:5000
