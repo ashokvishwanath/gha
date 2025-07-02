@@ -33,6 +33,8 @@ jobs:
 
       - name: 🏗️ Build and push frontend image
         run: |
+          # Add a timestamp to bust cache
+          echo "Building with timestamp: $(date)" > ./services/frontend/build_timestamp.txt
           docker build -t ${{ env.DOCKER_HUB_REPO }}/3-tier-microservices-frontend:latest ./services/frontend
           docker push ${{ env.DOCKER_HUB_REPO }}/3-tier-microservices-frontend:latest
 
@@ -88,6 +90,11 @@ jobs:
           kubectl rollout status deployment/service-a -n microservices
           kubectl rollout status deployment/service-b -n microservices
       
+      - name: 🔄 Force rollout restart
+        run: |
+          kubectl rollout restart deployment/frontend -n microservices
+          kubectl rollout status deployment/frontend -n microservices
+      
       - name: 🌐 Get Ingress IP
         run: |
           echo "Waiting for external IP..."
@@ -100,3 +107,9 @@ jobs:
             echo "Waiting for IP... (attempt $i/20)"
             sleep 15
           done
+
+      - name: 🔍 Verify frontend content
+        run: |
+          echo "Verifying frontend content..."
+          POD_NAME=$(kubectl get pods -n microservices -l app=frontend -o jsonpath='{.items[0].metadata.name}')
+          kubectl exec -n microservices $POD_NAME -- cat /usr/share/nginx/html/index.html | head -20
