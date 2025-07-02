@@ -112,17 +112,6 @@ jobs:
           echo "Checking pod status..."
           kubectl get pods -n microservices
       
-      - name: 🔄 Force restart of deployments
-        run: |
-          kubectl rollout restart deployment/frontend -n microservices
-          kubectl rollout status deployment/frontend -n microservices
-          
-          # Verify the content of the new pod
-          echo "Verifying frontend content in new pod:"
-          POD_NAME=$(kubectl get pods -n microservices -l app=frontend -o jsonpath='{.items[0].metadata.name}')
-          kubectl exec -n microservices $POD_NAME -- cat /usr/share/nginx/html/index.html | head -20
-          kubectl exec -n microservices $POD_NAME -- cat /usr/share/nginx/html/version.txt
-      
       - name: 🌐 Get Ingress IP
         run: |
           echo "Waiting for external IP..."
