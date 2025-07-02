@@ -87,6 +87,12 @@ jobs:
           sed -i 's|frontend:latest|frontend:latest?'$(date +%s)'|g' /tmp/chart/values.yaml
           cat /tmp/chart/values.yaml | grep frontend
           
+          # Check if the ingress already exists in default namespace and delete it if needed
+          if kubectl get ingress microservices-ingress -n default &> /dev/null; then
+            echo "Deleting existing ingress in default namespace"
+            kubectl delete ingress microservices-ingress -n default
+          fi
+          
           # Deploy with Helm using the modified chart
           helm upgrade --install microservices /tmp/chart --namespace microservices --create-namespace --set frontend.imagePullPolicy=Always
       
