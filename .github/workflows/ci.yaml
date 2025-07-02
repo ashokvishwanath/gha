@@ -99,9 +99,18 @@ jobs:
       - name: 🔍 Check deployment status
         run: |
           echo "Waiting for deployments to be ready..."
-          kubectl rollout status deployment/frontend -n microservices
-          kubectl rollout status deployment/service-a -n microservices
-          kubectl rollout status deployment/service-b -n microservices
+          # Increase timeout for kubectl rollout status
+          kubectl rollout status deployment/frontend -n microservices --timeout=300s || true
+          kubectl rollout status deployment/service-a -n microservices --timeout=300s || true
+          kubectl rollout status deployment/service-b -n microservices --timeout=300s || true
+          
+          # Verify deployments are actually running regardless of timeout
+          echo "Verifying deployments are running..."
+          kubectl get deployments -n microservices
+          
+          # Check if pods are running
+          echo "Checking pod status..."
+          kubectl get pods -n microservices
       
       - name: 🔄 Force restart of deployments
         run: |

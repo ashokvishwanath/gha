@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: frontend
 spec:
+  progressDeadlineSeconds: 300  # 5 minutes instead of default 10
   replicas: 1
   selector:
     matchLabels:
