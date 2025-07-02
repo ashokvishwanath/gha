@@ -71,8 +71,15 @@ jobs:
       
       - name: 🚀 Deploy to Kubernetes
         run: |
-          # Deploy with Helm but skip the ingress
-          helm upgrade --install microservices ./charts/microservices --namespace microservices --create-namespace --set skipIngress=true
+          # Create a temporary directory for modified chart
+          mkdir -p /tmp/chart
+          cp -r ./charts/microservices/* /tmp/chart/
+          
+          # Remove the ingress template
+          rm -f /tmp/chart/templates/ingress.yaml
+          
+          # Deploy with Helm using the modified chart
+          helm upgrade --install microservices /tmp/chart --namespace microservices --create-namespace
       
       - name: 🔍 Check deployment status
         run: |
