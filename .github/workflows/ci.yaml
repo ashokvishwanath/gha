@@ -149,7 +149,19 @@ jobs:
           kubectl get pods -n microservices -l app=service-c
           kubectl get service service-c -n microservices
           
-          # Test service-c endpoint
+          # Test service-c endpoint using kubectl port-forward
           echo "Testing service-c endpoint..."
           POD_NAME=$(kubectl get pods -n microservices -l app=service-c -o jsonpath='{.items[0].metadata.name}')
-          kubectl exec -n microservices $POD_NAME -- curl -s localhost:5000
+          
+          # Start port-forward in the background
+          kubectl port-forward -n microservices $POD_NAME 5000:5000 &
+          PF_PID=$!
+          
+          # Wait for port-forward to establish
+          sleep 5
+          
+          # Test the endpoint
+          curl -s http://localhost:5000
+          
+          # Kill the port-forward process
+          kill $PF_PID
