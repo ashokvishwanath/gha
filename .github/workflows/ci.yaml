@@ -83,9 +83,9 @@ jobs:
           mkdir -p /tmp/chart
           cp -r ./charts/microservices/* /tmp/chart/
           
-          # Update the image tag in values.yaml to force pull the latest image
-          sed -i 's|frontend:latest|frontend:latest?'$(date +%s)'|g' /tmp/chart/values.yaml
-          cat /tmp/chart/values.yaml | grep frontend
+          # Instead of modifying the image tag, add a unique annotation to force a rollout
+          TIMESTAMP=$(date +%s)
+          sed -i "s/rollme:.*/rollme: \"$TIMESTAMP\"/g" /tmp/chart/templates/frontend-deployment.yaml
           
           # Check if the ingress already exists in default namespace and delete it if needed
           if kubectl get ingress microservices-ingress -n default &> /dev/null; then
@@ -94,7 +94,7 @@ jobs:
           fi
           
           # Deploy with Helm using the modified chart
-          helm upgrade --install microservices /tmp/chart --namespace microservices --create-namespace --set frontend.imagePullPolicy=Always
+          helm upgrade --install microservices /tmp/chart --namespace microservices --create-namespace
       
       - name: 🔍 Check deployment status
         run: |

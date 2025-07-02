@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: frontend
 spec:
-  progressDeadlineSeconds: 300  # 5 minutes instead of default 10
+  progressDeadlineSeconds: 300
   replicas: 1
   selector:
     matchLabels:
@@ -13,7 +13,7 @@ spec:
       labels:
         app: frontend
       annotations:
-        rollme: "{{ randAlphaNum 5 }}"
+        rollme: "1"  # This will be replaced by the CI script
     spec:
       containers:
         - name: frontend
