@@ -33,8 +33,14 @@ jobs:
 
       - name: 🏗️ Build and push frontend image
         run: |
+          # Show the content of index.html before building
+          echo "Content of index.html before building:"
+          cat ./services/frontend/index.html | head -10
+          
           # Add a timestamp to bust cache
           echo "Building with timestamp: $(date)" > ./services/frontend/build_timestamp.txt
+          
+          # Build and push the image
           docker build -t ${{ env.DOCKER_HUB_REPO }}/3-tier-microservices-frontend:latest ./services/frontend
           docker push ${{ env.DOCKER_HUB_REPO }}/3-tier-microservices-frontend:latest
 
