@@ -2,12 +2,13 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: service-b
+  namespace: {{ .Release.Namespace }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: service-b
-  minReplicas: 1
+  minReplicas: {{ .Values.serviceB.replicas | default 2 }}
   maxReplicas: 5
   metrics:
   - type: Resource
