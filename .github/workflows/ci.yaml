@@ -1,25 +1,26 @@
-name: Build, Push, and Deploy
+name: Build and Deploy
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'services/**'
-      - 'charts/**'
-      - '.github/workflows/**'
+      - 'services/**'  # Only trigger builds when service code changes
   pull_request:
     branches:
       - main
     paths:
-      - 'services/**'
-      - 'charts/**'
+      - 'services/**'  # Only validate service code in PRs
   workflow_dispatch:
     inputs:
-      deploy_only:
-        description: 'Deploy only (skip build)'
+      build_images:
+        description: 'Build and push Docker images'
         type: boolean
         default: false
+      deploy:
+        description: 'Deploy to Kubernetes'
+        type: boolean
+        default: true
       environment:
         description: 'Environment to deploy to'
         type: choice
@@ -36,7 +37,7 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' || !inputs.deploy_only }}
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || inputs.build_images }}
     steps:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
@@ -80,7 +81,7 @@ jobs:
           
   deploy:
     needs: [build-and-push]
-    if: ${{ success() || inputs.deploy_only }}
+    if: ${{ (success() && (github.event_name == 'push' || inputs.deploy)) || (github.event_name == 'workflow_dispatch' && inputs.deploy && !inputs.build_images) }}
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repository
