@@ -4,12 +4,31 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'services/**'
+      - 'charts/**'
+      - '.github/workflows/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'services/**'
+      - 'charts/**'
   workflow_dispatch:
     inputs:
       deploy_only:
         description: 'Deploy only (skip build)'
         type: boolean
         default: false
+      environment:
+        description: 'Environment to deploy to'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+        default: 'dev'
+        required: true
 
 env:
   DOCKER_HUB_REPO: ashokvsetty
