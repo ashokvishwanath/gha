@@ -4,7 +4,7 @@ skipIngress: false
 frontend:
   image: ashokvsetty/3-tier-microservices-frontend:latest
   imagePullPolicy: Always
-  replicas: 1
+  replicas: 2
   resources:
     limits:
       cpu: "0.5"
@@ -16,7 +16,7 @@ frontend:
 serviceA:
   image: ashokvsetty/3-tier-microservices-service-a:latest
   imagePullPolicy: Always
-  replicas: 1
+  replicas: 2
   resources:
     limits:
       cpu: "0.5"
@@ -28,7 +28,7 @@ serviceA:
 serviceB:
   image: ashokvsetty/3-tier-microservices-service-b:latest
   imagePullPolicy: Always
-  replicas: 1
+  replicas: 2
   resources:
     limits:
       cpu: "0.5"
@@ -40,7 +40,7 @@ serviceB:
 serviceC:
   image: ashokvsetty/3-tier-microservices-service-c:latest
   imagePullPolicy: Always
-  replicas: 1
+  replicas: 2
   resources:
     limits:
       cpu: "0.5"
