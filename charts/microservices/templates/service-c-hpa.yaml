@@ -8,7 +8,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: service-c
-  minReplicas: {{ .Values.serviceC.replicas | default 2 }}
+  minReplicas: {{ .Values.serviceC.replicas | default 1 }}
   maxReplicas: 5
   metrics:
   - type: Resource
